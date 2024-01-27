@@ -1,0 +1,18 @@
+.react-autosuggest__suggestions-container {
+    position: absolute;
+    z-index: 1;
+    border: 1px solid #aaa;
+    background-color: #fff;
+    max-height: 150px;
+    overflow-y: auto;
+  }
+  
+  .react-autosuggest__suggestion {
+    padding: 10px;
+    cursor: pointer;
+  }
+  
+  .react-autosuggest__suggestion--highlighted {
+    background-color: #ddd;
+  }
+  
