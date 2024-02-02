@@ -1,53 +1,56 @@
-// AutoComplete.js
-import React, { useState } from 'react';
-import Autosuggest from 'react-autosuggest';
-import './AutoComplete.css';
+import React, { useEffect, useState } from "react";
+import Resources from "./../resources/countryData.json";
+import "./../components/AutoComplete.css";
 
-const AutoComplete = ({ suggestions }) => {
-  const [value, setValue] = useState('');
-  const [suggestionsList, setSuggestionsList] = useState([]);
+const AutoComplete = () => {
+  const [value, setValue] = useState("");
+  const [suggestion, setsuggestion] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
-  const getSuggestions = (inputValue) => {
-    const inputValueLowerCase = inputValue.toLowerCase();
-    console.log(inputValueLowerCase)
-    return suggestions.filter((item) =>
-      typeof item === "string" && item.toLowerCase().includes(inputValueLowerCase)
+  const takingInputFromTextBox = (item) => {
+    setValue(item.target.value.toLowerCase());
+  };
+
+  const handleSuggestionClick = (selectedItem) => {
+    setValue(selectedItem.name.toLowerCase());
+    setsuggestion([]);
+    setShowSuggestions(false);
+  };
+
+  useEffect(() => {
+    const source = Resources.filter((names) =>
+      names.name.toLowerCase().includes(value)
     );
-  };
-
-  const onSuggestionsFetchRequested = ({ value }) => {
-    setSuggestionsList(getSuggestions(value));
-  };
-
-  const onSuggestionsClearRequested = () => {
-    setSuggestionsList([]);
-  };
-
-  const onChange = (event, { newValue }) => {
-    setValue(newValue);
-  };
-
-  const renderSuggestion = (suggestion) => (
-    <div>
-      {suggestion}
-    </div>
-  );
-
-  const inputProps = {
-    placeholder: 'Type to search...',
-    value,
-    onChange,
-  };
+    setsuggestion(source);
+    setShowSuggestions(value.length > 0);
+  }, [value]);
 
   return (
-    <Autosuggest
-      suggestions={suggestionsList}
-      onSuggestionsFetchRequested={onSuggestionsFetchRequested}
-      onSuggestionsClearRequested={onSuggestionsClearRequested}
-      getSuggestionValue={(suggestion) => suggestion}
-      renderSuggestion={renderSuggestion}
-      inputProps={inputProps}
-    />
+    <>
+      <div className="parent-container">
+        <h1>Enter Country Name</h1>
+        <div className="innerDiv">
+        <input
+          type="text"
+          placeholder="Enter country name"
+          onChange={takingInputFromTextBox}
+        />
+        <button>Search</button>
+        </div>
+        <div className="suggestion-container">
+        {showSuggestions &&
+          suggestion.map((item, index) => (
+            <div
+              key={index}
+              className="suggestion-item"
+              onClick={() => handleSuggestionClick(item)}
+            >
+              {item.name}
+            </div>
+          ))}
+      </div>
+      </div>
+    </>
   );
 };
 
